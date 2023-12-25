@@ -1,0 +1,18 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+    "name": "League of Legends champion guide shortcut",
+    "description": "shortcut to access champion guides easily",
+    "version": "1.7",
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs"
+    ],
+    "action": {
+        "default_title": "U.GG",
+        "default_icon": "assets/icon.png",
+        "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+}
