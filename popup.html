@@ -3,8 +3,8 @@
 
 <head>
     <title>Set Page Color Popup</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" />
-    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/jquery-ui.css" />
     <style>
         body {
             width: 300px;
@@ -18,24 +18,16 @@
         } */
         
         .inputDiv {
-            width: 90%;
-            margin: 5% 2% 1% 5%
+            width: 95%;
+            margin: 2.5% 2% 1% 2.5%
         }
         
         #searchInput {
-            width: 90%;
+            width: 80%;
         }
         
         #favouriteInput {
             width: 90%;
-        }
-        
-        .items {
-            width: 90%;
-            margin-left: 5%;
-            margin-right: 5%;
-            margin-top: 2%;
-            margin-bottom: 2%;
         }
         
         #favLbl {
@@ -60,19 +52,12 @@
         .footer {
             position: fixed;
             bottom: 0;
-            /* width: 90%; */
-            padding-top: 2%;
-            margin-bottom: 2%;
-            padding-left: 5%;
-            padding-right: 5%;
-            height: 80px;
-        }
-        
-        .right {
-            position: absolute;
-            right: 0;
-            margin-right: 5%;
-            float: right;
+            width: 100%;
+            padding-top: 2px;
+            margin-bottom: 2px;
+            padding-left: 10px;
+            padding-right: 10px;
+            height: 40px;
         }
         
         ul {
@@ -185,21 +170,6 @@
             user-drag: none;
         }
         
-        #items {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        #items li {
-            float: left;
-            margin: 2px;
-            /* padding: 2px; */
-            border-radius: 50%;
-            width: 50px;
-            /* line-height: 50px; */
-        }
-        
         .img_wrp {
             display: inline-block;
             position: relative;
@@ -243,10 +213,10 @@
             font-size: 20px;
         } */
     </style>
-    <script src="jquery-3.4.1.min.js"></script>
-    <script src="jquery-ui.min.js"></script>
-    <script src="Sortable.js"></script>
-    <script src="popup.js"></script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/Sortable.js"></script>
+    <script src="js/popup.js"></script>
 
 </head>
 
@@ -254,50 +224,27 @@
     <div id="searchDiv" class="row inputDiv">
         <span class="glyphicon glyphicon-search"></span>
         <input id="searchInput">
-    </div>
-    <div id="menuDownDiv" style="text-align: center;" style="margin: 0;">
-        <span id="menuDownBtn" class="glyphicon glyphicon-menu-down" style="cursor: pointer;"></span>
+        <button id="toggleBtn" type="button" class="btn btn-default btn-sm glyphicon glyphicon-edit" style="margin-left: 0"></button>
     </div>
 
-    <div id="favouriteDiv" class="row inputDiv" style="margin-top: 0; margin-bottom: 1%; display:none;">
-        <span class="glyphicon glyphicon-star"></span>
-        <input id="favouriteInput">
-    </div>
-
-    <div id="menuUpDiv" style="text-align: center; margin: 0; display: none;">
-        <span id="menuUpBtn" class="glyphicon glyphicon-menu-up" style="cursor: pointer;"></span>
-    </div>
-
-
-    <!-- <div id="favLi"></div> -->
     <div class="scrollable" style="background-color: white;">
         <ul id="listWithHandle"></ul>
     </div>
     </br>
 
-    <div class="footer" style="background-color: white; margin-bottom: 5%;">
-        <div id="favouriteDiv" class="Row" style="width:80%; margin-right: 10%; margin-left: 10%; text-align: center;">
-            <div class="Column" style="background-color:#31334A; border-radius: 25px; ">
-                <div style="margin: 3%;  text-align: center;">
-                    <img class="role" src="assets/all.svg" data-role="all">
-                    <img class="role" src="assets/top.svg" data-role="top">
-                    <img class="role" src="assets/jung.svg" data-role="jungle">
-                    <img class="role" src="assets/mid.svg" data-role="middle">
-                    <img class="role" src="assets/bot.svg" data-role="adc">
-                    <img class="role" src="assets/supp.svg" data-role="support">
-                </div>
-            </div>
+    <div class="footer" style="background-color: white; margin-bottom: 0;">
+        
+    <div class="Column" style="background-color:#31334A; border-radius: 25px; width: 200px;">
+        <div style="margin: 3%;  text-align: center;">
+            <img class="role" src="assets/all.svg" data-role="all">
+            <img class="role" src="assets/top.svg" data-role="top">
+            <img class="role" src="assets/jung.svg" data-role="jungle">
+            <img class="role" src="assets/mid.svg" data-role="middle">
+            <img class="role" src="assets/bot.svg" data-role="adc">
+            <img class="role" src="assets/supp.svg" data-role="support">
         </div>
-        <div class="row col-md-12">
-            <button id="toggleBtn" type="button" class="btn btn-default btn-sm" style="margin-left: 5%; margin-right: 5%;">
-                <span class="glyphicon glyphicon-edit"></span> Edit
-            </button>
-
-            <div class="box">
-                <p class="updated_patch noselect" style="margin-right: 5%; margin-bottom: 0;">Updated to Patch <span id="patchId"></span></p>
-            </div>
-        </div>
-        <button id="downloadBtn">Download and update champion list</button>
+    </div>
+    <span class="updated_patch noselect" style="margin-right: 5px; margin-bottom: 5px;">V<span id="patchId"></span></span>
     </div>
 </body>
 
