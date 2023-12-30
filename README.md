@@ -32,7 +32,3 @@ The extension strictly utilizes these permissions to ensure efficient functional
 ## Contribution
 
 Found a bug or want to suggest a feature? Contributions and feedback are welcome! Fork the repository and submit a pull request or open an issue.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
