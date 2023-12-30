@@ -153,7 +153,7 @@ async function addToFavouriteList(championName) {
         return;
     }
 
-    let iconResponse = await fetch(getChampionUrl(championToAdd.icon));
+    let iconResponse = await fetch(getChampionIconUrl(championToAdd.icon));
     let blob = await iconResponse.blob();
     let base64data = await blobToBase64(blob);
 
@@ -226,7 +226,7 @@ function initFavouriteList() {
 
 }
 
-function getChampionUrl(iconPath) {
+function getChampionIconUrl(iconPath) {
     return `http://ddragon.leagueoflegends.com/cdn/${patch.patchId}/img/champion/${iconPath}`;
 }
 
@@ -247,21 +247,18 @@ function generateShortcutGridHtml(favouriteChampion) {
 
 function getEditButtonsHtml(favouriteChampion) {
     return `
-    <span class="glyphicon glyphicon-remove delete-button" data-champion="${favouriteChampion.name}" style="color:red; cursor:pointer;"></span>
-    <span class="noselect">&nbsp;&nbsp;</span>
-    <span class="glyphicon glyphicon-move my-handle vertical-align"></span>`;
+    <span class="glyphicon glyphicon-remove edit-button delete-button" data-champion="${favouriteChampion.name}" style="color:red; cursor:pointer;"></span>
+    <span class="glyphicon glyphicon-move my-handle edit-button"></span>`;
 }
 
 function generateChampionHtml(favouriteChampion) {
-    let imageSrc = favouriteChampion.iconBase64 ?? getChampionUrl(favouriteChampion.icon);
+    let imageSrc = favouriteChampion.iconBase64 ?? getChampionIconUrl(favouriteChampion.icon);
 
     return `
     <li class="list-group-item">
         <div data-champion="${favouriteChampion.name}" class="Row sortableV1Item">
             <div class="icon-holder Column">
-                <div class="icon noselect">
-                    <img src="${imageSrc}" alt="${favouriteChampion.icon}"></img>
-                </div>
+                <img class="icon noselect nodrag" src="${imageSrc}" alt="${favouriteChampion.icon}"></img>
             </div>
             <label class="Column noselect vertical-center championLbl">${favouriteChampion.name}</label>
             <div class="Column vertical-center shortcut-grid-or-edit-buttons">
@@ -403,12 +400,15 @@ $(document).ready(async () => {
 });
 
 function redirectToChampionGuide(championName, url) {
-    if (!url) {
-        url = shortcutConfigs[selectedShortcutId].url;
-    }
+    url = url || shortcutConfigs[selectedShortcutId].url;
 
-    url = url.replace("<champion-name>", championName);
-    chrome.tabs.create({ url: url });
+    const formattedChampionName = championName === "Nunu & Willump" ? "nunu" : championName.replace(/[ '&]/g, (match) => {
+        if (match === " ") return "";
+        if (match === "&") return "-";
+        return "";
+    });
+
+    chrome.tabs.create({ url: url.replace("<champion-name>", formattedChampionName.toLowerCase()) });
 }
 
 function championShortcutOnclick(championName, shortcutConfigId) {
