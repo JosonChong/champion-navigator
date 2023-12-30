@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Extension Options</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .url-pair {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .url-pair .name-input {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    .url-pair .url-input {
+      flex: 6;
+      margin-right: 5px;
+    }
+
+    .show-checkbox {
+      flex: 0.25;
+    }
+
+    .show-label {
+      margin-right: 5px;
+    }
+
+    .delete-btn {
+      flex: 0.5;
+      margin-left: 5px;
+    }
+
+    #add-save-btns {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h1>Extension Options</h1>
+    <form id="options-form">
+      <div id="add-save-btns">
+        <button type="button" class="btn btn-primary mr-2" id="add-url-btn">Add URL</button>
+        <button type="submit" class="btn btn-success" id="save-options-btn">Save</button>
+      </div>
+
+      <div id="urls-container">
+      </div>
+    </form>
+  </div>
+
+  <!-- Local jQuery and options.js -->
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/options.js"></script>
+</body>
+</html>

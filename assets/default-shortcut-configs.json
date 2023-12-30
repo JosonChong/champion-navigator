@@ -1,0 +1,7 @@
+{
+    "u.gg": {
+        "name": "u.gg",
+        "url": "https://u.gg/lol/champions/<champion-name>/build/",
+        "isShow": true
+    }
+}

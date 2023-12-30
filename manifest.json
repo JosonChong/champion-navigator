@@ -2,6 +2,7 @@
 "update_url": "https://clients2.google.com/service/update2/crx",
 
     "name": "League of Legends champion guide shortcut",
+    "options_page": "options.html",
     "description": "shortcut to access champion guides easily",
     "version": "1.7",
     "permissions": [
