@@ -71,8 +71,12 @@ function saveData(key, data) {
 };
 
 function getData(key) {
-    const storedData = localStorage.getItem(key);
-    return JSON.parse(storedData);
+    try {
+        const storedData = localStorage.getItem(key);
+        return JSON.parse(storedData);
+    } catch(ex) {
+        return null;
+    }
 };
 
 $(() => {
@@ -421,8 +425,6 @@ function championShortcutOnclick(championName, shortcutConfigId) {
     for (const favouriteChampion of favouriteList) {
         if (favouriteChampion.name == championName) {
             favouriteChampion.defaultShortcutId = shortcutConfigId;
-
-            console.log(favouriteChampion);
         }
     }
 
