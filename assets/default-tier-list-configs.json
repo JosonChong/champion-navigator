@@ -1,0 +1,25 @@
+{
+    "defaultTierListSite": "default",
+    "tierListSites": {
+        "default": {
+            "all": {
+                "url": "https://u.gg/lol/tier-list"
+            },
+            "top": {
+                "url": "https://u.gg/lol/top-lane-tier-list"
+            },
+            "jungle": {
+                "url": "https://u.gg/lol/jungle-lane-tier-list"
+            },
+            "mid": {
+                "url": "https://u.gg/lol/mid-lane-tier-list"
+            },
+            "adc": {
+                "url": "https://u.gg/lol/adc-tier-list"
+            },
+            "support": {
+                "url": "https://u.gg/lol/support-tier-list"
+            }
+        }
+    }
+}

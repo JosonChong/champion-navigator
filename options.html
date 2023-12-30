@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Extension Options</title>
-  <!-- Bootstrap CSS -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .url-pair {
@@ -39,23 +38,54 @@
     #add-save-btns {
       margin-bottom: 15px;
     }
+
+    .role-input {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .role-name {
+      width: 80px;
+    }
+
+    .role-url-input {
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container mt-4">
-    <h1>Extension Options</h1>
+    
     <form id="options-form">
-      <div id="add-save-btns">
-        <button type="button" class="btn btn-primary mr-2" id="add-url-btn">Add URL</button>
-        <button type="submit" class="btn btn-success" id="save-options-btn">Save</button>
+      <h5>Role Urls</h5>
+      <div id="tier-list-urls-container">
+        <div id="all" class="role-input">
+          <span class="role-name">ALL</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
+        <div id="top" class="role-input">
+          <span class="role-name">TOP</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
+        <div id="jungle" class="role-input">
+          <span class="role-name">JUNGLE</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
+        <div id="mid" class="role-input">
+          <span class="role-name">MID</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
+        <div id="adc" class="role-input">
+          <span class="role-name">ADC</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
+        <div id="support" class="role-input">
+          <span class="role-name">SUPPORT</span><input type="text" class="form-control role-url-input" placeholder="Url">
+        </div>
       </div>
-
-      <div id="urls-container">
-      </div>
+      <h5>Shortcut Urls <button type="button" class="btn btn-primary mr-2" id="add-url-btn">Add URL</button></h5>
+      <div id="shortcut-urls-container"></div>
+      <button type="submit" class="btn btn-success" id="save-options-btn">Save</button>
     </form>
   </div>
 
-  <!-- Local jQuery and options.js -->
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/options.js"></script>

@@ -1,6 +1,7 @@
 $(document).ready(function() {
   const form = $('#options-form');
-  const urlsContainer = $('#urls-container');
+  const tierListUrlsContainer = $('#tier-list-urls-container');
+  const shortcutUrlsContainer = $('#shortcut-urls-container');
   const addUrlBtn = $('#add-url-btn');
 
   function createUrlPair(configId, name, url, isShow) {
@@ -26,7 +27,7 @@ $(document).ready(function() {
   }
 
   function addUrlPair(configId, name, url, isShow) {
-    urlsContainer.append(createUrlPair(configId, name, url, isShow));
+    shortcutUrlsContainer.append(createUrlPair(configId, name, url, isShow));
   }
 
   addUrlBtn.click(function() {
@@ -36,16 +37,33 @@ $(document).ready(function() {
   form.submit(function(event) {
     event.preventDefault();
 
-    const checkedShowCheckboxes = urlsContainer.find('.show-checkbox:checked');
+    const checkedShowCheckboxes = shortcutUrlsContainer.find('.show-checkbox:checked');
     if (checkedShowCheckboxes.length > 4) {
       showErrorMessage('Please select at most 4 URLs to display.');
       return;
     }
 
     let isValid = true;
+    let tierListConfigs = { "defaultTierListSite": "default", "tierListSites": { "default": {} } };
     let shortcutConfigs = {};
 
-    urlsContainer.find('.url-pair').each(function() {
+    let defaultTierListConfig = {}
+    tierListUrlsContainer.find('.role-input').each(function() {
+      const id = $(this).attr('id');      
+      const urlInput = $(this).find('.role-url-input').val();
+
+      if (!urlInput) {
+        showErrorMessage('Please provide a URL for all Names.');
+        isValid = false;
+        return false;
+      }
+
+      defaultTierListConfig[id] = { url: urlInput };
+    });
+
+    tierListConfigs["tierListSites"]["default"] = defaultTierListConfig;
+
+    shortcutUrlsContainer.find('.url-pair').each(function() {
       const id = $(this).attr('id');      
       const urlInput = $(this).find('.url-input').val();
       const nameInput = $(this).find('.name-input').val();
@@ -69,12 +87,13 @@ $(document).ready(function() {
         return false;
       }
 
-      let config = { name: nameInput, url: urlInput, isShow: isShow }
-      shortcutConfigs[id] = config;
+      let shortcutConfig = { name: nameInput, url: urlInput, isShow: isShow }
+      shortcutConfigs[id] = shortcutConfig;
     });
 
     if (isValid) {
       localStorage.setItem("shortcutConfigs", JSON.stringify(shortcutConfigs));
+      localStorage.setItem("tierListConfigs", JSON.stringify(tierListConfigs));
 
       showSuccessMessage("Options saved.");
     }
@@ -99,8 +118,14 @@ $(document).ready(function() {
     }, 3000);
   }
 
-  let storedConfigs = JSON.parse(localStorage.getItem("shortcutConfigs"));
-  for (const [storedConfigId, storedConfig] of Object.entries(storedConfigs)) {
-    addUrlPair(storedConfigId, storedConfig.name, storedConfig.url, storedConfig.isShow)
+  let storedTierListConfigs = JSON.parse(localStorage.getItem("tierListConfigs"));
+  let defaultTierListConfig = storedTierListConfigs.tierListSites[storedTierListConfigs.defaultTierListSite];
+  for (const [tierListId, tierListConfig] of Object.entries(defaultTierListConfig)) {
+    tierListUrlsContainer.find(`#${tierListId}`).find('.role-url-input').val(tierListConfig.url);
+  }
+
+  let storedShortcutConfigs = JSON.parse(localStorage.getItem("shortcutConfigs"));
+  for (const [storedConfigId, storedConfig] of Object.entries(storedShortcutConfigs)) {
+    addUrlPair(storedConfigId, storedConfig.name, storedConfig.url, storedConfig.isShow);
   }
 });

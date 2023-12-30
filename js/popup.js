@@ -4,12 +4,13 @@ let patch = getData("patch");
 let championList = getData("champions");
 let favouriteList = getData("favouriteList") ?? [];
 let sortable;
-let isEditVisible = false;
+let isEditing = false;
 let shortcutConfigs = getData("shortcutConfigs");
+let tierListConfig;
 let selectedShortcutId = getData("defaultShortcut");
 
 function lblClicked() {
-    if (isEditVisible) {
+    if (isEditing) {
         return;
     }
 
@@ -54,7 +55,7 @@ function initAutoComplete(source) {
         autoFocus: true,
         select: function(event, ui) {
             event.preventDefault();
-            if (isEditVisible) {
+            if (isEditing) {
                 addToFavouriteList(ui.item.value);
             } else {
                 redirectToChampionGuide(ui.item.value);
@@ -183,25 +184,29 @@ function deleteFromFavouriteList(data) {
 }
 
 function toggle() {
-    let visibility = "";
     const toggleBtn = document.getElementById("toggleBtn");
 
-    if (isEditVisible) {
-        visibility = "hidden";
-        toggleBtn.classList.remove('glyphicon-ok');
-        toggleBtn.classList.add('glyphicon-edit');
-    } else {
-        visibility = "visible";
+    isEditing = !isEditing;
+
+    if (isEditing) {
         toggleBtn.classList.remove('glyphicon-edit');
         toggleBtn.classList.add('glyphicon-ok');
+    } else {
+        toggleBtn.classList.remove('glyphicon-ok');
+        toggleBtn.classList.add('glyphicon-edit');
     }
 
-    const elements = document.getElementsByClassName('edit');
-    for (const element of elements) {
-        element.style.visibility = visibility;
-    }
+    updateFavouriteList(favouriteList);
+    // $('.shortcut-grid-or-edit-buttons').each((index, element) => {
+    //     let championName = element.parentNode.getAttribute('data-champion');
 
-    isEditVisible = !isEditVisible;
+    //     if (isEditing) {
+    //         element.innerHTML = `
+    //         <span class="glyphicon glyphicon-remove delete-button" data-champion="${championName}" style="color:red; cursor:pointer;"></span>
+    //         <span class="noselect">&nbsp;&nbsp;</span>
+    //         <span class="glyphicon glyphicon-move my-handle" aria-hidden="true"></span>`;
+    //     }
+    // });
 }
 
 function initFavouriteList() {
@@ -225,16 +230,30 @@ function getChampionUrl(iconPath) {
     return `http://ddragon.leagueoflegends.com/cdn/${patch.patchId}/img/champion/${iconPath}`;
 }
 
-function generateChampionHTML(favouriteChampion) {
-    console.log(favouriteChampion);
-    let imageSrc = favouriteChampion.iconBase64 ?? getChampionUrl(favouriteChampion.icon);
+function generateShortcutGridHtml(favouriteChampion) {
     let shortcutContents = "";
-    for (let [shortcutId, shortcut] of Object.entries(shortcutConfigs)) {
-        let isDefaultShortcut = shortcutId === favouriteChampion.defaultShortcutId;
-        shortcutContents += `<div data-champion="${favouriteChampion.name}" data-shortcut-id="${shortcutId}" class="shortcut-item ${isDefaultShortcut ? "default-shortcut" : ""}">
-                                    <span>${shortcut.name}</span>
+    for (let [shortcutConfigId, shortcutConfig] of Object.entries(shortcutConfigs)) {
+        let isDefaultShortcut = shortcutConfigId === favouriteChampion.defaultShortcutId;
+        shortcutContents += `<div data-champion="${favouriteChampion.name}" data-shortcut-id="${shortcutConfigId}" class="shortcut-item ${isDefaultShortcut ? "default-shortcut" : ""}">
+                                    <span>${shortcutConfig.name}</span>
                             </div>`;
     }
+
+    return `
+    <div class="grid-container">
+        ${shortcutContents}
+    </div>`;
+}
+
+function getEditButtonsHtml(favouriteChampion) {
+    return `
+    <span class="glyphicon glyphicon-remove delete-button" data-champion="${favouriteChampion.name}" style="color:red; cursor:pointer;"></span>
+    <span class="noselect">&nbsp;&nbsp;</span>
+    <span class="glyphicon glyphicon-move my-handle vertical-align"></span>`;
+}
+
+function generateChampionHtml(favouriteChampion) {
+    let imageSrc = favouriteChampion.iconBase64 ?? getChampionUrl(favouriteChampion.icon);
 
     return `
     <li class="list-group-item">
@@ -245,10 +264,8 @@ function generateChampionHTML(favouriteChampion) {
                 </div>
             </div>
             <label class="Column noselect vertical-center championLbl">${favouriteChampion.name}</label>
-            <div class="Column vertical-center">
-                <div class="grid-container">
-                    ${shortcutContents}
-                </div>
+            <div class="Column vertical-center shortcut-grid-or-edit-buttons">
+                ${isEditing ? getEditButtonsHtml(favouriteChampion) : generateShortcutGridHtml(favouriteChampion)}
             </div>
         </div>
     </li>
@@ -256,11 +273,11 @@ function generateChampionHTML(favouriteChampion) {
 }
 
 function updateFavouriteList(champions) {
-    const htmlElements = champions.map(champion => generateChampionHTML(champion)).join('');
+    const htmlElements = champions.map(champion => generateChampionHtml(champion)).join('');
     document.getElementById("listWithHandle").innerHTML = htmlElements;
 
     const lbls = document.querySelectorAll(".sortableV1Item");
-    const deleteBtns = document.querySelectorAll(".deleteBtns");
+    const deleteBtns = document.querySelectorAll(".delete-button");
 
     lbls.forEach(lbl => lbl.addEventListener('click', lblClicked));
     deleteBtns.forEach(btn => btn.addEventListener('click', deleteClicked));
@@ -272,6 +289,23 @@ function updateFavouriteList(champions) {
         championShortcutOnclick(championName, shortcutConfigId);
         e.stopPropagation();
     }));
+}
+
+async function initTierListConfig() {
+    let tierListConfigs = getData("tierListConfigs");
+
+    if (!tierListConfigs) {
+        let filePath = 'assets/default-tier-list-configs.json';
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${filePath}`);
+        }
+        tierListConfigs = await response.json();
+
+        saveData('tierListConfigs', tierListConfigs);
+    }
+
+    tierListConfig = tierListConfigs["tierListSites"][tierListConfigs["defaultTierListSite"]];
 }
 
 $(document).ready(async () => {
@@ -296,8 +330,8 @@ $(document).ready(async () => {
         });
     }
 
-    let firstTimeUser = !shortcutConfigs;
-    if (firstTimeUser) {
+    let shortcutConfigsNotStored = !shortcutConfigs;
+    if (shortcutConfigsNotStored) {
         const response = await fetch('assets/default-shortcut-configs.json');
         if (!response.ok) {
           throw new Error('Failed to fetch the file');
@@ -312,10 +346,12 @@ $(document).ready(async () => {
             .filter(([key, value]) => value.isShow)
     );
 
-    if (firstTimeUser) {
+    if (shortcutConfigsNotStored) {
         selectedShortcutId = Object.keys(shortcutConfigs)[0];
         saveData('defaultShortcut', selectedShortcutId);
     }
+
+    await initTierListConfig();
 
     document.getElementById('toggleBtn').addEventListener('click', toggle);
 
@@ -390,12 +426,15 @@ function championShortcutOnclick(championName, shortcutConfigId) {
         }
     }
 
-    console.log(favouriteList);
-
     saveData("favouriteList", favouriteList);
 }
 
 function searchRole(role) {
-    var newURL = "https://u.gg/lol/tier-list?role=" + role;
-    chrome.tabs.create({ url: newURL });
+    let url = tierListConfig[role].url;
+    
+    if (url) {
+        chrome.tabs.create({ url: url });
+    } else {
+        console.error(`Cannot find tier list url for ${role}.`)
+    }
 }
